@@ -18,11 +18,11 @@ db.once('open', () => {
 
 
 const userSchema = new mongoose.Schema({
-        id: Number,
+        id: String,
         username: String,
         name: String,
         email: String,
-        age: Number
+        age: String
 })
 
 let usersModel = mongoose.model('UserManager', userSchema)
@@ -58,7 +58,7 @@ exports.find = (req,res)=> {
     
 }
 
-//add user page is created
+//add user page is generated
 exports.form = (req,res)=> {
     res.render('add-user')
 }
@@ -75,6 +75,8 @@ exports.create = (req,res) => {
     newU.save((err, data)=> {
         if(err) {
             console.log(err)
+        } else {
+            res.redirect('/')
         }
     })
     
@@ -95,5 +97,7 @@ exports.edit = (req,res)=> {
         }
     }).lean()
 
+    usersModel.findByIdAndUpdate(userEdit, req.body {useFindAndModify: false})
 }
 
+//SavePoint
