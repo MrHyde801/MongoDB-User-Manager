@@ -5,8 +5,10 @@ const uuid = require('uuid')
 const path = require('path')
 const {MongoClient} = require('mongodb')
 const mongoose = require('mongoose')
+const { runInNewContext } = require('vm')
 mongoose.connect('mongodb://localhost:27017/Users', {useNewUrlParser: true})
 const db = mongoose.connection
+mongoose.set('autoIndex', true)
 
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', () => {
@@ -16,7 +18,7 @@ db.once('open', () => {
 
 
 const userSchema = new mongoose.Schema({
-        id: mongoose.ObjectId,
+        id: Number,
         username: String,
         name: String,
         email: String,
@@ -25,18 +27,24 @@ const userSchema = new mongoose.Schema({
 
 let usersModel = mongoose.model('UserManager', userSchema)
 
+let dcount 
 
-//View usersModel
+//View users
 exports.view = (req,res) => {
     usersModel.find({}, (err, doc) => {
         if(err) {
             throw err
         } else {
+            usersModel.countDocuments({}, (err,count) => {
+                dcount = count
+            })
             res.render('home', {rows: doc})
         }
     }).lean()
     
 }
+
+//search users
 exports.find = (req,res)=> {
     let searchTerm = req.body.search
 
@@ -50,18 +58,42 @@ exports.find = (req,res)=> {
     
 }
 
+//add user page is created
 exports.form = (req,res)=> {
     res.render('add-user')
 }
 
+//add user
 exports.create = (req,res) => {
-    res.render('add-user')
-    console.log(req.params.number)
+    const newU = new usersModel()
+    newU.id = dcount
+    newU.username = req.body.username
+    newU.name = req.body.name
+    newU.email = req.body.email
+    newU.age = req.body.age
+
+    newU.save((err, data)=> {
+        if(err) {
+            console.log(err)
+        }
+    })
+    
 }
 
 
-//edit user
-exports.edit = (req,res) => {
-    res.render('edit-user')
+//Edit User
+exports.edit = (req,res)=> {
+    
+    let userEdit = req.params.id
+    console.log(userEdit)
+    usersModel.findOne({ id : userEdit}, (err, oneDoc) => {
+        if(!err) {
+            console.log(oneDoc)
+            res.render('edit-user', { oneDoc })
+        } else {
+            throw err
+        }
+    }).lean()
+
 }
 

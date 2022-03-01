@@ -10,6 +10,6 @@ router.post('/', userController.find)
 router.get('/add-user', userController.form);
 router.post('/add-user', userController.create);
 router.get('/edit-user/:id', userController.edit);
-
+router.post('/edit-user/:id', userController.edit);
 
 module.exports = router;
