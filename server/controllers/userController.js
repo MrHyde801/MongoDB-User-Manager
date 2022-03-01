@@ -1,14 +1,13 @@
 const express = require('express')
 const app = express()
 const fs = require('fs')
-const uuid = require('uuid')
+const bodyParser = require('body-parser');
 const path = require('path')
-const {MongoClient} = require('mongodb')
 const mongoose = require('mongoose')
-const { runInNewContext } = require('vm')
 mongoose.connect('mongodb://localhost:27017/Users', {useNewUrlParser: true})
 const db = mongoose.connection
 mongoose.set('autoIndex', true)
+mongoose.set('debug', true)
 
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', () => {
@@ -18,11 +17,11 @@ db.once('open', () => {
 
 
 const userSchema = new mongoose.Schema({
-        id: String,
+        id: Number,
         username: String,
         name: String,
         email: String,
-        age: String
+        age: Number
 })
 
 let usersModel = mongoose.model('UserManager', userSchema)
@@ -79,7 +78,7 @@ exports.create = (req,res) => {
             res.redirect('/')
         }
     })
-    
+
 }
 
 
@@ -88,16 +87,34 @@ exports.edit = (req,res)=> {
     
     let userEdit = req.params.id
     console.log(userEdit)
-    usersModel.findOne({ id : userEdit}, (err, oneDoc) => {
+    usersModel.findOne( { id: userEdit}, (err, oneDoc) => {
         if(!err) {
-            console.log(oneDoc)
             res.render('edit-user', { oneDoc })
         } else {
             throw err
         }
+        console.log(oneDoc.name)
+        // usersModel.updateOne(
+        //     {username: oneDoc.username},
+        //     {name : oneDoc.name},
+        //     {email : oneDoc.email},
+        //     {age : oneDoc.age},
+        // )
     }).lean()
-
-    usersModel.findByIdAndUpdate(userEdit, req.body {useFindAndModify: false})
 }
 
-//SavePoint
+
+exports.update = (req,res)=> {
+    let userEdit = req.params.id
+    console.log(userEdit)
+    usersModel.findOneAndUpdate( { id: userEdit}, {$set: req.body}, {new: true}, (err, oneDoc) => {
+        if(!err) {
+            res.render('edit-user', { oneDoc })
+        } else {
+            throw err
+        }
+        console.log(oneDoc)
+    }).lean()
+}
+
+//SAVEPOIINNTT
