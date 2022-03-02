@@ -7,7 +7,6 @@ const mongoose = require('mongoose')
 
 let app = express();
 const port = process.env.PORT || 5500;
-const routes = require('./server/routes/user');
 const router = require('./server/routes/user');
 
 //Templating Engine

@@ -1,4 +1,6 @@
     {{#with oneDoc}}
+    <input type="hidden" name="id" value={{this.id}}>
+    {{!-- this works, might not be the best way^^ --}}
     <div class="col-6">
         <div class="form-floating mb-3">
         <input type="text" class="form-control" id="floatingInput" value={{this.username}} placeholder="User ID" name="username">

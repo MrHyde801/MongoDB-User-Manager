@@ -93,28 +93,34 @@ exports.edit = (req,res)=> {
         } else {
             throw err
         }
-        console.log(oneDoc.name)
-        // usersModel.updateOne(
-        //     {username: oneDoc.username},
-        //     {name : oneDoc.name},
-        //     {email : oneDoc.email},
-        //     {age : oneDoc.age},
-        // )
+        
+       
     }).lean()
 }
 
-
+//Save User
 exports.update = (req,res)=> {
-    let userEdit = req.params.id
-    console.log(userEdit)
-    usersModel.findOneAndUpdate( { id: userEdit}, {$set: req.body}, {new: true}, (err, oneDoc) => {
+    let userEdit = req.body.id
+    console.log(req.body)
+
+    let newusername = req.body.username
+    let newname = req.body.name
+    let newemail = req.body.email
+    let newage = req.body.age
+    //^^might not be the best way, might be a way to 2way bind with react or angular
+
+    usersModel.findOneAndUpdate( { id: userEdit}, { $set: { 
+        username: newusername,
+        name: newname,
+        email: newemail,
+        age: newage 
+
+    }}, {new: true}, (err, oneDoc) => {
         if(!err) {
-            res.render('edit-user', { oneDoc })
+            res.redirect('/')
         } else {
             throw err
         }
-        console.log(oneDoc)
     }).lean()
 }
 
-//SAVEPOIINNTT
