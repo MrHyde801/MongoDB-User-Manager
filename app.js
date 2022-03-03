@@ -13,6 +13,11 @@ const router = require('./server/routes/user');
 app.set('view engine', 'hbs');
 app.engine('hbs', hbs.engine({
     extname: '.hbs',
+    helpers: {
+        addOne: function(value, options){
+          return parseInt(value) + 1;
+        }
+    }
 }));
 
 app.use(express.json())
@@ -27,3 +32,4 @@ app.use('/', router);
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
 })
+

@@ -8,7 +8,7 @@
 
 
 
-<table class="table table-bordered" style="color: #206C43">
+<table class="table table-bordered table-hover" style="color: #206C43">
   <thead class="thead">
     <tr>
       <th scope="col">#</th>
@@ -23,14 +23,14 @@
 
     {{#each rows}}
     <tr>
-      <th scope="row">{{this.id}}</th>
+      <th scope="row" value={{addOne @index}} >{{addOne @index}}</th>
       <td>{{this.username}}</td>
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
       <td>{{this.age}}</td>
       <td class="text-center">
-          <a href ="/edit-user/{{this.id}}" type="button" class="btn btn-light btn smal" ><i class="bi bi-pencil"></i> Edit</a>
-          <a href ="#" type="button" class="btn btn-light btn smal" ><i class="bi bi-trash"></i> Delete</a>
+          <a href ="/edit-user/{{this._id}}" type="button" class="btn btn-light btn smal" ><i class="bi bi-pencil"></i> Edit</a>
+          <a href ="/{{this._id}}" type="button" class="btn btn-light btn smal" ><i class="bi bi-trash"></i> Delete</a>
       </td>
     </tr>
     {{/each}}

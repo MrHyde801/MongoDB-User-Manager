@@ -3,11 +3,12 @@ const app = express()
 const fs = require('fs')
 const bodyParser = require('body-parser');
 const path = require('path')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const e = require('express');
 mongoose.connect('mongodb://localhost:27017/Users', {useNewUrlParser: true})
 const db = mongoose.connection
 mongoose.set('autoIndex', true)
-mongoose.set('debug', true)
+
 
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', () => {
@@ -15,18 +16,17 @@ db.once('open', () => {
 })
 
 
-
 const userSchema = new mongoose.Schema({
-        id: Number,
+        rowNum: Number,
         username: String,
         name: String,
         email: String,
         age: Number
 })
 
+
 let usersModel = mongoose.model('UserManager', userSchema)
 
-let dcount 
 
 //View users
 exports.view = (req,res) => {
@@ -34,9 +34,6 @@ exports.view = (req,res) => {
         if(err) {
             throw err
         } else {
-            usersModel.countDocuments({}, (err,count) => {
-                dcount = count
-            })
             res.render('home', {rows: doc})
         }
     }).lean()
@@ -65,7 +62,6 @@ exports.form = (req,res)=> {
 //add user
 exports.create = (req,res) => {
     const newU = new usersModel()
-    newU.id = dcount
     newU.username = req.body.username
     newU.name = req.body.name
     newU.email = req.body.email
@@ -86,14 +82,15 @@ exports.create = (req,res) => {
 exports.edit = (req,res)=> {
     
     let userEdit = req.params.id
-    console.log(userEdit)
+    console.log(req.query)
     usersModel.findOne( { id: userEdit}, (err, oneDoc) => {
         if(!err) {
+            
             res.render('edit-user', { oneDoc })
         } else {
             throw err
         }
-        
+
        
     }).lean()
 }
@@ -101,13 +98,11 @@ exports.edit = (req,res)=> {
 //Save User
 exports.update = (req,res)=> {
     let userEdit = req.body.id
-    console.log(req.body)
-
     let newusername = req.body.username
     let newname = req.body.name
     let newemail = req.body.email
     let newage = req.body.age
-    //^^might not be the best way, might be a way to 2way bind with react or angular
+    //^^might not be the best way, might be a way to 2-way bind with react or angular
 
     usersModel.findOneAndUpdate( { id: userEdit}, { $set: { 
         username: newusername,
@@ -124,3 +119,13 @@ exports.update = (req,res)=> {
     }).lean()
 }
 
+exports.delete = (req,res)=> {
+    let userDelete = req.params.id
+    usersModel.findOneAndDelete({id: userDelete}, (err)=> {
+        if(err) {
+            throw err
+        } else {
+            res.redirect('/')
+        }
+    }).lean()
+}
