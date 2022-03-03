@@ -82,7 +82,6 @@ exports.create = (req,res) => {
 exports.edit = (req,res)=> {
     
     let userEdit = req.params.id
-    console.log(req.query)
     usersModel.findOne( { id: userEdit}, (err, oneDoc) => {
         if(!err) {
             
