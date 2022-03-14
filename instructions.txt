@@ -1,0 +1,10 @@
+1. download zip from github
+2. npm install to install all of the packages
+3. Open up compass and create a database labeled "Users", and lable the collection "usermanagers"
+4.(optional) You can upload OurMongoArray.json to the usermanagers collection so when you run "npm start" in 
+    the terminal it has a database to play with. Or just run the app and take time to add your own users.
+5. You can add users with the add user button.
+6. search by first or last name
+7. edit and delete existing users. 
+
+Thank you.
